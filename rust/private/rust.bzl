@@ -44,15 +44,16 @@ def _determine_lib_name(name, crate_type, toolchain, lib_hash = ""):
         str: A unique library name
     """
     extension = None
-    prefix = ""
     if crate_type in ("dylib", "cdylib", "proc-macro"):
-        extension = toolchain.dylib_ext
+        if toolchain.target_arch == "wasm32":
+            extension = ".wasm"
+        else:
+            extension = toolchain.dylib_ext
     elif crate_type == "staticlib":
         extension = toolchain.staticlib_ext
     elif crate_type in ("lib", "rlib"):
         # All platforms produce 'rlib' here
         extension = ".rlib"
-        prefix = "lib"
     elif crate_type == "bin":
         fail("crate_type of 'bin' was detected in a rust_library. Please compile " +
              "this crate as a rust_binary instead.")
