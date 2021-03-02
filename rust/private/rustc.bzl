@@ -648,6 +648,9 @@ def establish_cc_info(ctx, crate_info, toolchain, cc_toolchain, feature_configur
     if crate_info.is_test or crate_info.type not in ("staticlib", "cdylib", "rlib", "lib") or getattr(ctx.attr, "out_binary", False):
         return []
 
+    if toolchain.target_arch == "wasm32":
+        return []
+
     if crate_info.type == "staticlib":
         library_to_link = cc_common.create_library_to_link(
             actions = ctx.actions,
